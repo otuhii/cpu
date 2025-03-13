@@ -1,2 +1,6 @@
 # cpu
 cpu in verilog for learning and stuff
+
+at first ill try to follow this guy's tutorial but at the end i think that would not be enought so 
+https://github.com/hughperkins/cpu-tutorial
+
