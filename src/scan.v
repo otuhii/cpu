@@ -11,7 +11,7 @@ module main(
 		for (i = 0; i < 256; i = i + 1)
 			out[i] = 16'b0;
 
-		file = $fopen("../txt/test.hex", "r");
+		file = $fopen("../txt/program.hex", "r");
 		if (file) begin 
 			readCount = 0;
 			while(!$feof(file) && readCount < 256) begin

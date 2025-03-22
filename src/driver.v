@@ -12,9 +12,6 @@ module driver;
 		forever #5 clk = ~clk;
 	end
 
-	always @(posedge clk) begin
-		$display("%h", value);
-	end 
 	
 	initial begin 
 	#2000;
