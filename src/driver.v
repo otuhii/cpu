@@ -1,6 +1,6 @@
 module driver;
 	wire [15:0] value;
-	wire [15:0] memory[0:1023];
+	wire [15:0] memory[0:255];
 	reg clk;
 	reg rst;
 
@@ -17,7 +17,7 @@ module driver;
 	end 
 	
 	initial begin 
-	#200;
+	#2000;
 	$finish;
 
 	end

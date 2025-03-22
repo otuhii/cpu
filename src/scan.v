@@ -1,6 +1,6 @@
 module main(
 	input rst,
-	output reg[15:0] out[0:1023]
+	output reg[15:0] out[0:255]
 );
 	
 	integer i;
@@ -8,13 +8,13 @@ module main(
 	reg [15:0] readBuffer;
 
 	initial begin 
-		for (i = 0; i < 1024; i = i + 1)
+		for (i = 0; i < 256; i = i + 1)
 			out[i] = 16'b0;
 
 		file = $fopen("../txt/test.hex", "r");
 		if (file) begin 
 			readCount = 0;
-			while(!$feof(file) && readCount < 1024) begin
+			while(!$feof(file) && readCount < 256) begin
 				if($fscanf(file, "%h\n", readBuffer) == 1) begin
 					out[readCount] = readBuffer;
 					readCount = readCount + 1;
@@ -30,7 +30,7 @@ module main(
 
 	always @(posedge rst) begin
 		if (rst)
-			for (i = 0; i < 1024; i = i + 1) 
+			for (i = 0; i < 256; i = i + 1) 
 				out[i] = 16'd0;
 	end
 
