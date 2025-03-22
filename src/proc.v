@@ -1,7 +1,7 @@
 module proc(
 	input clk,
 	input rst,
-	input [15:0] data[0:9],
+	input reg[15:0] memory[0:1023],
 	output reg[15:0] out
 );
 
@@ -13,9 +13,9 @@ module proc(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin 
 			count = 4'd0;
-			out = data[count];
+			out = memory[count];
 		end else begin 
-			out = data[count];
+			out = memory[count];
 			count = (count == 9) ? 0 : count + 1;
 		end
 	end
