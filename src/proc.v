@@ -25,7 +25,7 @@ module proc(
 		end else begin 
 			valueBuffer = memory[pc];
 			if (valueBuffer[15:11] == 5'd1)
-				out <= memory[valueBuffer[10:0]];
+				$display(memory[valueBuffer[10:0]]);
 			else if (valueBuffer[15:13] == 3'd6)
 				registers[valueBuffer[12:8]] <= valueBuffer[7:0];   
 			else if (valueBuffer[15:11] == 5'd2) begin

@@ -11,7 +11,7 @@ module main(
 		for (i = 0; i < 256; i = i + 1)
 			out[i] = 16'b0;
 
-		file = $fopen("../txt/program.hex", "r");
+		file = $fopen("../txt/assembler/program.hex", "r");
 		if (file) begin 
 			readCount = 0;
 			while(!$feof(file) && readCount < 256) begin
@@ -29,9 +29,15 @@ module main(
 
 
 	always @(posedge rst) begin
-		if (rst)
+		if (rst) begin
+			i = 0;
+			file = 0;
+			readCount = 0;
+			readBuffer = 16'b0;
 			for (i = 0; i < 256; i = i + 1) 
 				out[i] = 16'd0;
+
+		end
 	end
 
 

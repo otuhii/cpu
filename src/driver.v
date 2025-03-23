@@ -5,7 +5,7 @@ module driver;
 	reg rst;
 
 	main scan(rst, memory);
-	proc pMod(clk, rst, memory, value);
+	proc processor(clk, rst, memory, value);
 	
 	initial begin 
 		clk = 0;
