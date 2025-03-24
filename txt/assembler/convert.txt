@@ -1,4 +1,0 @@
-li x1, 123
-outr 1
-li x16, 102
-outr 16

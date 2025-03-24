@@ -39,18 +39,25 @@ class Assembler:
             registerNum = int(line[1].strip(",").strip("x"))
             value = int(line[2])
             out = (opcode << 13) | (registerNum << 8) | value
-
         return f"{out:04x}"
 
+    
+    def convertValue(self, line):
+        return f"{int(line[1]):04x}"
 
     def convertCode(self):
         for idx, line in enumerate(self.code):
             line = line.strip("\n").split()
+            if "value:" in line:
+                self.hex[idx] = self.convertValue(line)
             if line[0] in oacCodes:
                 self.hex[idx] = self.convertOAC(line)
             if line[0] in moCodes:
                 self.hex[idx] = self.convertMO(line)
-    
+            if "endprog" in line: 
+                self.hex[idx] = "7777"
+
+
     def write(self):
         filename = self.filename.stem + ".hex"
         with open(filename, "w") as file:
@@ -59,6 +66,6 @@ class Assembler:
 
 
 if __name__ == "__main__":
-    a = Assembler("convert.txt")
+    a = Assembler("../program.txt")
     a.convertCode()
     a.write()

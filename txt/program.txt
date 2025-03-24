@@ -1,0 +1,10 @@
+li x1, 123
+outr 1
+outr 1
+li x5, 10
+outr 5
+outloc 9
+outr 1
+outr 1 
+endprog
+value: 100
