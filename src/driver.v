@@ -62,13 +62,6 @@ module driver;
 		end
 		
 
-		for (i = 0; i < 15; i = i + 1) begin
-			initAddr = 16'b0+i;
-			#1
-			$display("%h",memOut);	
-		end
-
-
 		rst = 0;
 		initWe = 0;
 		

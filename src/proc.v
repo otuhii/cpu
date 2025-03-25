@@ -10,7 +10,6 @@ module proc(
 	reg[15:0] instructionReg = 16'b0;
 	reg[7:0] registers[0:31];
 	reg[7:0] pc = 8'b0;
-	reg[16:0] tempAddr = 16'b0;
 
 	typedef enum {
 		FETCH,
@@ -40,14 +39,13 @@ module proc(
 	
 	
 	always @ (posedge clk or posedge rst) begin
-		//$display("[CLK] state=%s, nextState=%s, instructionReg=%h", state.name(), nextState.name(), instructionReg);
+		//$display("[CLK] state=%s, nextState=%s, instructionReg=%h, addr=%h", state.name(), nextState.name(), instructionReg,addr);
 		if (rst) begin 
 			state <= FETCH;
 			pc <= 8'd0;
 			we <= 1'b0;
 			instructionReg <= 16'b0;
 		end else begin 
-			state <= nextState;
 			case(state)
 				FETCH: begin
 					instructionReg <= fromMem;
@@ -69,9 +67,14 @@ module proc(
 				end
 				MEM_READ: begin 
 					$display("%h", fromMem);
+					addr <= pc;
 					pc <= pc + 1;
 				end
 			endcase
+
+
+
+			state <= nextState;
 		end
 	end
 
