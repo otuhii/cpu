@@ -12,7 +12,6 @@ moCodes = {
 }
 
 
-
 class Assembler:
     def __init__(self, filename):
         with open(filename, "r") as file: 
@@ -25,7 +24,7 @@ class Assembler:
         if (line[0] == "outloc"):
             operation = oacCodes[line[0]]
             value = int(line[1])
-            out = (operation << 8) | value
+            out = (operation << 11) | value
         elif (line[0] == "outr"):
             operation = oacCodes[line[0]]
             registerNum = int(line[1].strip(",").strip("x"))

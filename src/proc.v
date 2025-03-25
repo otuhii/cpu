@@ -21,16 +21,16 @@ module proc(
 
 	state_t state, nextState;
 
-
 	always @(*) begin 
 		case (state)
 			FETCH: nextState = DECODE;
 			DECODE: nextState = EXECUTE;
 			EXECUTE: 
-				if (instructionReg[15:11] == 5'd1) //outloc inst
+				if (instructionReg[15:11] == 5'd1) begin  //outloc inst
 					nextState = MEM_READ;
-				else 
+				end else begin 
 					nextState = FETCH;
+				end
 			MEM_READ: nextState = FETCH;
 			default: nextState = FETCH;
 		endcase
@@ -39,7 +39,8 @@ module proc(
 	end
 	
 	
-	always @ (posedge clk or posedge rst) begin 
+	always @ (posedge clk or posedge rst) begin
+		//$display("[CLK] state=%s, nextState=%s, instructionReg=%h", state.name(), nextState.name(), instructionReg);
 		if (rst) begin 
 			state <= FETCH;
 			pc <= 8'd0;
@@ -47,7 +48,6 @@ module proc(
 			instructionReg <= 16'b0;
 		end else begin 
 			state <= nextState;
-
 			case(state)
 				FETCH: begin
 					instructionReg <= fromMem;
