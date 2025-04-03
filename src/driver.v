@@ -64,7 +64,7 @@ module driver;
 
 		rst = 0;
 		initWe = 0;
-		
+
 		forever #10 clk = ~clk;
 
 

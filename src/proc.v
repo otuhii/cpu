@@ -40,13 +40,14 @@ module proc(
 	
 	
 	always @ (posedge clk or posedge rst) begin
-		$display("[CLK] state=%s, instructionReg=%h, addr=%h, pc=%h", state.name(), instructionReg,addr, pc);
 		if (rst) begin 
 			state <= FETCH;
 			pc <= 8'd0;
 			we <= 1'b0;
 			instructionReg <= 16'b0;
-		end else begin 
+			addr <= 16'd0;
+		end else begin
+			//$display("[CLK] state=%s, instructionReg=%h, addr=%h, pc=%h", state.name(), instructionReg,addr, pc);
 			case(state)
 				FETCH: begin
 					instructionReg <= fromMem;
@@ -73,7 +74,7 @@ module proc(
 				end
 				MEM_READ: begin 
 					$display("%h", fromMem);
-					addr <= pc;
+					addr <= pc + 1;
 					pc <= pc + 1;
 				end
 			endcase
