@@ -18,7 +18,8 @@ module proc(
 		MEM_READ
 	} state_t;
 
-	state_t state, nextState;
+	state_t state = FETCH;
+	state_t nextState = DECODE;
 
 	always @(*) begin 
 		case (state)
@@ -39,7 +40,7 @@ module proc(
 	
 	
 	always @ (posedge clk or posedge rst) begin
-		//$display("[CLK] state=%s, nextState=%s, instructionReg=%h, addr=%h", state.name(), nextState.name(), instructionReg,addr);
+		$display("[CLK] state=%s, instructionReg=%h, addr=%h, pc=%h", state.name(), instructionReg,addr, pc);
 		if (rst) begin 
 			state <= FETCH;
 			pc <= 8'd0;
@@ -58,12 +59,17 @@ module proc(
 					end
 					else if (instructionReg[15:13] == 3'd6) begin
 						registers[instructionReg[12:8]] <= instructionReg[7:0];
-						pc <= pc + 1;
+						$display("li executed");
 					end else if (instructionReg[15:11] == 5'd2) begin
 						$display("%h", registers[instructionReg[4:0]]);
-						pc <= pc + 1;
 					end else if (instructionReg == 16'b0111011101110111)
 						$finish;
+
+
+					if (instructionReg[15:11] != 5'd1) begin
+						addr <= pc + 1;
+						pc <= pc + 1;
+					end
 				end
 				MEM_READ: begin 
 					$display("%h", fromMem);
