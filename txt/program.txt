@@ -1,7 +1,8 @@
 li x1, 29
+load x3, 7
 outr x1
-outr x1
-outr x1
-outloc 6
+outr x3
+store x1, 69
+outloc 69
 endprog
 value: 10

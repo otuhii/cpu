@@ -60,7 +60,18 @@ module driver;
 			#10 clk = ~clk;
 			#10 clk = ~clk;
 		end
-		
+
+
+		/*
+		for (i = 0; i < 70; i = i + 1) begin
+			initAddr = 16'b0+i;
+			#1
+			$display("%h",memOut);
+			if (i == 69)
+				$display("memory dump done");
+		end
+		*/
+
 
 		rst = 0;
 		initWe = 0;

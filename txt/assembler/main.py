@@ -8,7 +8,9 @@ oacCodes = {
 
 #memory ops
 moCodes = {
-    "li" : 0b110
+    "li" : 0b110,
+    "store" : 0b001,
+    "load" : 0b010
 }
 
 
@@ -21,6 +23,7 @@ class Assembler:
 
     #one argument codes
     def convertOAC(self, line):
+        out = 0
         if (line[0] == "outloc"):
             operation = oacCodes[line[0]]
             value = int(line[1])
@@ -33,11 +36,17 @@ class Assembler:
         return f"{out:04x}"
 
     def convertMO(self, line):
+        out = 0
         if (line[0] == "li"):
             opcode = moCodes[line[0]]
             registerNum = int(line[1].strip(",").strip("x"))
             value = int(line[2])
             out = (opcode << 13) | (registerNum << 8) | value
+        elif (line[0] == "store" or line[0] == "load"):
+            opcode = moCodes[line[0]]
+            registerNum = int(line[1].strip(",").strip("x"))
+            addr = int(line[2])
+            out = (opcode<<13) | (registerNum << 8) | addr
         return f"{out:04x}"
 
     

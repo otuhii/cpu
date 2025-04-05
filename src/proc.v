@@ -15,7 +15,7 @@ module proc(
 		FETCH,
 		DECODE,
 		EXECUTE,
-		MEM_READ
+		MEMORY
 	} state_t;
 
 	state_t state = FETCH;
@@ -26,12 +26,12 @@ module proc(
 			FETCH: nextState = DECODE;
 			DECODE: nextState = EXECUTE;
 			EXECUTE: 
-				if (instructionReg[15:11] == 5'd1) begin  //outloc inst
-					nextState = MEM_READ;
+				if (instructionReg[15:11] == 5'd1 || instructionReg[15:13] == 3'd1 || instructionReg[15:13] == 3'd2) begin  //outloc inst
+					nextState = MEMORY;
 				end else begin 
 					nextState = FETCH;
 				end
-			MEM_READ: nextState = FETCH;
+			MEMORY: nextState = FETCH;
 			default: nextState = FETCH;
 		endcase
 		//$display("state ", state);
@@ -43,36 +43,54 @@ module proc(
 		if (rst) begin 
 			state <= FETCH;
 			pc <= 8'd0;
-			we <= 1'b0;
+			we <= 0;
 			instructionReg <= 16'b0;
 			addr <= 16'd0;
+			toMem <= 16'd0;
 		end else begin
-			//$display("[CLK] state=%s, instructionReg=%h, addr=%h, pc=%h", state.name(), instructionReg,addr, pc);
+			$display("[CLK] state=%s, instructionReg=%h, addr=%h, pc=%h", state.name(), instructionReg,addr, pc);
 			case(state)
 				FETCH: begin
+					we <= 0;//reset write signal
+					instructionReg <= fromMem;
 					addr <= pc;
 				end
 				DECODE: begin
-					instructionReg <= fromMem;
 				end
 				EXECUTE: begin
 					if (instructionReg[15:11] == 5'd1) begin
 						addr <= instructionReg[10:0];
 					end
+					else if (instructionReg[15:13] == 3'd1) begin //store 
+						we <= 1;
+						addr <= instructionReg[7:0];
+						toMem <= registers[instructionReg[12:8]];
+					end
+					else if (instructionReg[15:13] == 3'd2) begin //load 
+						addr <= instructionReg[7:0];
+					end
 					else if (instructionReg[15:13] == 3'd6) begin // li
 						registers[instructionReg[12:8]] <= instructionReg[7:0];
-						//$display("li executed");
 					end else if (instructionReg[15:11] == 5'd2) begin // outr
 						$display("%h", registers[instructionReg[4:0]]);
 					end else if (instructionReg == 16'b0111011101110111) //endprog
 						$finish;
-					if (instructionReg[15:11] != 5'd1) begin
+					if (nextState != MEMORY) begin
 						addr <= pc + 1;
 						pc <= pc + 1;
 					end
 				end
-				MEM_READ: begin 
-					$display("%h", fromMem);
+				MEMORY: begin 
+					if (instructionReg[15:11] == 5'd1) //outloc
+						$display("%h", fromMem);
+					else if (instructionReg[15:13] == 3'd1) //store
+						//idk what to put here,
+					//previously i had toMem assignment
+					//but then moved it to execute stage
+						we <= 0;
+					else if (instructionReg[15:13] == 3'd2) //load
+						registers[instructionReg[12:8]] <= fromMem;
+
 					addr <= pc + 1;
 					pc <= pc + 1;
 				end
