@@ -1,16 +1,7 @@
-li x1, 123
-outr 1
-outr 1
-li x5, 10
-li x30, 19
-outr 5
-outr 30
-outloc 13
-outloc 14
-outloc 15
-outr 1
-outr 1 
+li x1, 29
+outr x1
+outr x1
+outr x1
+outloc 6
 endprog
-value: 100
-value: 32
-value: 43
+value: 10

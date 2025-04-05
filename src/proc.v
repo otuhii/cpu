@@ -50,23 +50,22 @@ module proc(
 			//$display("[CLK] state=%s, instructionReg=%h, addr=%h, pc=%h", state.name(), instructionReg,addr, pc);
 			case(state)
 				FETCH: begin
-					instructionReg <= fromMem;
 					addr <= pc;
 				end
-				DECODE: begin end//skip for now
+				DECODE: begin
+					instructionReg <= fromMem;
+				end
 				EXECUTE: begin
 					if (instructionReg[15:11] == 5'd1) begin
 						addr <= instructionReg[10:0];
 					end
-					else if (instructionReg[15:13] == 3'd6) begin
+					else if (instructionReg[15:13] == 3'd6) begin // li
 						registers[instructionReg[12:8]] <= instructionReg[7:0];
-						$display("li executed");
-					end else if (instructionReg[15:11] == 5'd2) begin
+						//$display("li executed");
+					end else if (instructionReg[15:11] == 5'd2) begin // outr
 						$display("%h", registers[instructionReg[4:0]]);
-					end else if (instructionReg == 16'b0111011101110111)
+					end else if (instructionReg == 16'b0111011101110111) //endprog
 						$finish;
-
-
 					if (instructionReg[15:11] != 5'd1) begin
 						addr <= pc + 1;
 						pc <= pc + 1;
