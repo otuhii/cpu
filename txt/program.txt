@@ -1,8 +1,4 @@
-li x1, 29
-load x3, 7
-outr x1
-outr x3
-store x1, 69
-outloc 69
+li r1, 199
+mov r2, r1
+outr r1
 endprog
-value: 10

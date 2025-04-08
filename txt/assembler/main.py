@@ -1,16 +1,12 @@
 from pathlib import Path
 
-
-oacCodes = {
-    "outloc" : 0b00001,
-    "outr" : 0b00010
+memory_access = {
+    "li" : 0b0011,
+    "mov" : 0b0001
 }
 
-#memory ops
-moCodes = {
-    "li" : 0b110,
-    "store" : 0b001,
-    "load" : 0b010
+debug_codes = {
+    "outr" : 0b0010,
 }
 
 
@@ -22,48 +18,40 @@ class Assembler:
             self.hex = [0]*len(self.code)
 
     #one argument codes
-    def convertOAC(self, line):
+    def convertDEBUG(self, line):
         out = 0
-        if (line[0] == "outloc"):
-            operation = oacCodes[line[0]]
-            value = int(line[1])
-            out = (operation << 11) | value
-        elif (line[0] == "outr"):
-            operation = oacCodes[line[0]]
-            registerNum = int(line[1].strip(",").strip("x"))
-            out = (operation << 11) | (0 << 6) | registerNum
+        if (line[0] == "outr"):
+            operation = debug_codes[line[0]]
+            registerNum = int(line[1].strip(",").strip("r"))
+            out = (operation << 21) | (registerNum << 12)
 
-        return f"{out:04x}"
+        return f"{out:08x}"
 
-    def convertMO(self, line):
-        out = 0
+    def convertMA(self, line):
         if (line[0] == "li"):
-            opcode = moCodes[line[0]]
-            registerNum = int(line[1].strip(",").strip("x"))
+            opcode = memory_access[line[0]]
+            registerNum = int(line[1].strip(",").strip("r"))
             value = int(line[2])
-            out = (opcode << 13) | (registerNum << 8) | value
-        elif (line[0] == "store" or line[0] == "load"):
-            opcode = moCodes[line[0]]
-            registerNum = int(line[1].strip(",").strip("x"))
-            addr = int(line[2])
-            out = (opcode<<13) | (registerNum << 8) | addr
-        return f"{out:04x}"
+            out = (opcode << 21) | (registerNum << 12) | value
+        elif (line[0] == "mov"):
+            opcode = memory_access[line[0]]
+            destRegister = int(line[1].strip(",").strip("r"))
+            sourceRegister = int(line[2].strip(",").strip("r"))
+            out = (opcode << 21) | (destRegister << 12) | sourceRegister
+            
 
-    
-    def convertValue(self, line):
-        return f"{int(line[1]):04x}"
+        return f"{out:08x}"
 
     def convertCode(self):
         for idx, line in enumerate(self.code):
             line = line.strip("\n").split()
-            if "value:" in line:
-                self.hex[idx] = self.convertValue(line)
-            if line[0] in oacCodes:
-                self.hex[idx] = self.convertOAC(line)
-            if line[0] in moCodes:
-                self.hex[idx] = self.convertMO(line)
+            if line[0] in memory_access:
+                self.hex[idx] = self.convertMA(line)
+            if line[0] in debug_codes:
+                self.hex[idx] = self.convertDEBUG(line)
+
             if "endprog" in line: 
-                self.hex[idx] = "7777"
+                self.hex[idx] = "ffffffff"
 
 
     def write(self):

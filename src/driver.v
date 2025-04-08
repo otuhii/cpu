@@ -70,8 +70,6 @@ module driver;
 			if (i == 69)
 				$display("memory dump done");
 		end
-		*/
-
 
 		rst = 0;
 		initWe = 0;
